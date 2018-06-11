@@ -7,24 +7,23 @@ import App from './App'
 
 import appState from './store/state'
 
-const root = document.getElementById("root")
+const root = document.getElementById('root')
 const render = (Component) => {
-    ReactDOM.render(
-        <AppContainer>
-          <Provider appState={appState}>
-            <BrowserRouter>
-              <Component />
-            </BrowserRouter>
-          </Provider>
-        </AppContainer>,root)
+  ReactDOM.render(
+    <AppContainer>
+      <Provider appState={appState}>
+        <BrowserRouter>
+          <Component />
+        </BrowserRouter>
+      </Provider>
+    </AppContainer>, root)
 }
 
 render(App)
 
-if(module.hot) {
-    module.hot.accept(() =>{
-        render(App)
-    })
+if (module.hot) {
+  module.hot.accept(() => {
+    render(App)
+  })
 }
-
 

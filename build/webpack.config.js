@@ -5,48 +5,48 @@ const HTMLPlugin = require('html-webpack-plugin')
 const isDev = process.env.NODE_ENV === 'development'
 
 const config = {
-    entry: {
-        app: path.join(__dirname, '../client/entry.js')
-    },
-    output: {
-        filename: '[name].[hash].js',
-        path: path.join(__dirname, '../dist'),
-        publicPath: '/public/'
-    },
-    resolve: {
-      extensions: ['.js', '.jsx']
-    },
-    module: {
-        rules: [
-            /* {
-                enforce: 'pre',
-                test: /.(js|jsx)$/,
-                loader: 'eslint-loader',
-                exclude: [
-                    path.resolve(__dirname, '../node_modules')
-                ]
-            }, */
-            {
-                test: /.jsx$/,
-                loader: 'babel-loader'
-            },
-            {
-                test: /.js$/,
-                loader: 'babel-loader',
-                exclude: [
-                    path.join(__dirname, '../node_modules')
-                ]
-            }
+  entry: {
+    app: path.join(__dirname, '../client/entry.js')
+  },
+  output: {
+    filename: '[name].[hash].js',
+    path: path.join(__dirname, '../dist'),
+    publicPath: '/public/'
+  },
+  resolve: {
+    extensions: ['.js', '.jsx']
+  },
+  module: {
+    rules: [
+      /* {
+          enforce: 'pre',
+          test: /.(js|jsx)$/,
+          loader: 'eslint-loader',
+          exclude: [
+              path.resolve(__dirname, '../node_modules')
+          ]
+      }, */
+      {
+        test: /.jsx$/,
+        loader: 'babel-loader'
+      },
+      {
+        test: /.js$/,
+        loader: 'babel-loader',
+        exclude: [
+          path.join(__dirname, '../node_modules')
         ]
-    },
-    plugins: [
-        new HTMLPlugin({
-            template: path.join(__dirname, '../client/index.html')
-        })
+      }
     ]
+  },
+  plugins: [
+    new HTMLPlugin({
+      template: path.join(__dirname, '../client/index.html')
+    })
+  ]
 }
 
-// localhost:8888/filename
+const proxy = 'api.douban.com'
 if (isDev) {
   config.entry = {
     app: [
@@ -57,7 +57,7 @@ if (isDev) {
   config.devServer = {
     host: '0.0.0.0',
     compress: true,
-    port: '8080',
+    port: '8081',
     contentBase: path.join(__dirname, '../dist'),
     hot: true,
     overlay: {
@@ -66,6 +66,13 @@ if (isDev) {
     publicPath: '/public/',
     historyApiFallback: {
       index: '/public/index.html'
+    },
+    proxy: {
+      '/book': {
+        target: 'https://api.douban.com',
+        pathRewrite: {'^/book': '/v2/book/1220562'},
+        changeOrigin: true
+      }
     }
   }
   config.plugins.push(new webpack.HotModuleReplacementPlugin())

@@ -1,11 +1,11 @@
-import React,{ Component } from 'react'
+import React, { Component } from 'react'
 
 export default class Detail extends Component {
-    render() {
-        return (
-            <div>
-                detail组件页面
-            </div>
-        )
-    }
+  render() {
+    return (
+      <div>
+         detail组件页面
+      </div>
+    )
+  }
 }
