@@ -9,10 +9,6 @@ export default class Home extends Component {
   constructor(props) {
     super(props)
   }
-  componentDidMount() {
-    this.props.appState.getGlobalInfo()
-    console.log(this.props.appState.globalInfo)
-  }
   changeName(event) {
     this.props.appState.changeName(event.target.value)
   }
@@ -21,6 +17,7 @@ export default class Home extends Component {
       <div>
         <p>这是首页!{this.props.appState.msg}</p>
         <input onChange={this.changeName.bind(this)} />
+        <p>{this.props.appState.globalInfo.summary}</p>
       </div>
     )
   }

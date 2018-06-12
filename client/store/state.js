@@ -2,11 +2,7 @@ import { observable, computed, autorun, action } from 'mobx'
 import { request } from '../utils/axios'
 
 export class AppState {
-  constructor() {
-    this.globalInfo = {}
-  }
-
-  @observable globalInfo
+  @observable globalInfo = {}
   @observable count = 0
   @observable name = 'owen'
 
@@ -15,7 +11,8 @@ export class AppState {
       method: 'GET',
       url: '/book',
     })
-    this.setGlobalInfo(response)
+    const { data } = response
+    this.setGlobalInfo(data)
   }
   @computed get msg() {
     return `${this.name} has ${this.count} years old`
@@ -33,9 +30,8 @@ export class AppState {
 
 const appState = new AppState()
 
-//
-// setInterval(() => {
-//   appState.add();
-// },1000)
+autorun(() => {
+  appState.getGlobalInfo()
+})
 
 export default appState
