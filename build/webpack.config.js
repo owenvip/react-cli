@@ -11,10 +11,11 @@ const config = {
   output: {
     filename: '[name].[hash].js',
     path: path.join(__dirname, '../dist'),
-    publicPath: '/public/'
+    publicPath: '/dist/'
   },
   resolve: {
-    extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx'],
+
   },
   module: {
     rules: [
@@ -36,6 +37,51 @@ const config = {
         exclude: [
           path.join(__dirname, '../node_modules')
         ]
+      },
+      {
+        test: /\.less|css$/,
+        use: [
+          {
+            loader: 'style-loader' // creates style nodes from JS strings
+          },
+          {
+            loader: 'css-loader' // translates CSS into CommonJS
+          },
+          {
+            loader: 'less-loader',
+            options: {
+              modifyVars: {
+                'font-size-base': '14px'
+              }
+            } // compiles Less to CSS
+          }
+        ]
+      },
+      {
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        use: [
+          'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
+          {
+            loader: 'image-webpack-loader',
+            options: {
+              progressive: true,
+              optimizationLevel: 7,
+              interlaced: false,
+              pngquant: {
+                quality: '65-90',
+                speed: 4
+              }
+            }
+          }
+        ]
+      },
+      {
+        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        use: 'url-loader?limit=10000&mimetype=application/font-woff'
+      },
+      {
+        test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        use: 'file-loader'
       }
     ]
   },
@@ -46,7 +92,6 @@ const config = {
   ]
 }
 
-const proxy = 'api.douban.com'
 if (isDev) {
   config.entry = {
     app: [
@@ -63,9 +108,9 @@ if (isDev) {
     overlay: {
       errors: true
     },
-    publicPath: '/public/',
+    publicPath: '/static/',
     historyApiFallback: {
-      index: '/public/index.html'
+      index: '/static/index.html'
     },
     proxy: {
       '/book': {
