@@ -1,6 +1,7 @@
 const path = require('path')
 const webpack = require('webpack')
 const HTMLPlugin = require('html-webpack-plugin')
+const Uglifyjs  = require('uglifyjs-webpack-plugin')
 
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -11,21 +12,20 @@ const config = {
   output: {
     filename: '[name].[hash].js',
     path: path.join(__dirname, '../dist'),
-    publicPath: '/dist/'
+    publicPath: '/public/'
   },
   resolve: {
     extensions: ['.js', '.jsx'],
-
   },
   module: {
     rules: [
       /* {
-          enforce: 'pre',
-          test: /.(js|jsx)$/,
-          loader: 'eslint-loader',
-          exclude: [
-              path.resolve(__dirname, '../node_modules')
-          ]
+        enforce: 'pre',
+        test: /.(js|jsx)$/,
+        loader: 'eslint-loader',
+        exclude: [
+          path.resolve(__dirname, '../node_modules')
+        ]
       }, */
       {
         test: /.jsx$/,
@@ -88,7 +88,8 @@ const config = {
   plugins: [
     new HTMLPlugin({
       template: path.join(__dirname, '../client/index.html')
-    })
+    }),
+    new Uglifyjs()
   ]
 }
 
@@ -108,14 +109,18 @@ if (isDev) {
     overlay: {
       errors: true
     },
-    publicPath: '/static/',
+    publicPath: '/public/',
     historyApiFallback: {
-      index: '/static/index.html'
+      index: '/public/index.html'
     },
     proxy: {
       '/book': {
         target: 'https://api.douban.com',
         pathRewrite: {'^/book': '/v2/book/1220562'},
+        changeOrigin: true
+      },
+      '/pubapi': {
+        target: 'http://192.168.32.106:28081',
         changeOrigin: true
       }
     }

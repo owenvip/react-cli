@@ -6,7 +6,7 @@ export function request(config) {
   return axios(config).then((response) => {
     if (response.data.errCode && response.data.errCode !== 0) {
       console.error(response.data)
-      return
+      return false
     }
     return Promise.resolve(response)
   }).catch((e) => {
