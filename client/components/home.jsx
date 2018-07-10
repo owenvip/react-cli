@@ -24,10 +24,9 @@ export default class Home extends Component {
   render() {
     return (
       <div>
-        <p>这是首页!{this.props.appState.msg}</p>
+        <p>这是首页!!!!!{this.props.appState.msg}</p>
         <input onChange={this.changeName.bind(this)} />
         <p>{this.props.appState.globalInfo.summary}</p>
-        <p className="testBg" />
       </div>
     )
   }

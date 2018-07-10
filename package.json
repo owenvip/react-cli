@@ -5,8 +5,8 @@
   "main": "entry.js",
   "scripts": {
     "clear": "rimraf dist",
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --config build/webpack.config.js",
-    "build": "npm run clear && webpack --config build/webpack.config.js"
+    "dev": "npm run clear && cross-env NODE_ENV=development webpack-dev-server --config build/webpack.config.js",
+    "build": "npm run clear && cross-env NODE_ENV=production webpack --config build/webpack.config.js"
   },
   "author": "Owen",
   "license": "ISC",
@@ -40,6 +40,7 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-1": "^6.24.1",
     "cross-env": "^5.1.1",
+    "css-loader": "^0.28.4",
     "eslint": "^4.14.0",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-config-standard": "^10.2.1",
@@ -50,19 +51,19 @@
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-react": "^7.5.1",
     "eslint-plugin-standard": "^3.0.1",
+    "file-loader": "^0.11.2",
     "html-webpack-plugin": "^2.30.1",
     "http-proxy-middleware": "^0.17.4",
-    "memory-fs": "^0.4.1",
-    "rimraf": "^2.6.2",
-    "webpack": "^3.9.1",
-    "webpack-dev-server": "^2.9.5",
     "image-webpack-loader": "^3.3.1",
     "less": "^2.7.2",
     "less-loader": "^4.0.5",
+    "memory-fs": "^0.4.1",
+    "name-all-modules-plugin": "^1.0.1",
     "postcss-loader": "^2.0.6",
-    "file-loader": "^0.11.2",
+    "rimraf": "^2.6.2",
     "style-loader": "^0.18.2",
     "url-loader": "^0.5.9",
-    "css-loader": "^0.28.4"
+    "webpack": "^3.9.1",
+    "webpack-dev-server": "^2.9.5"
   }
 }
