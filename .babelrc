@@ -4,5 +4,6 @@
     "stage-1",
     "react"
   ],
+  "compact": false,
   "plugins": ["transform-decorators-legacy", "react-hot-loader/babel", "transform-runtime"]
 }

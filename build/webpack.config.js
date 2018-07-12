@@ -1,20 +1,22 @@
 const path = require('path')
 const webpack = require('webpack')
+const HappyPack = require('happypack')
 const HTMLPlugin = require('html-webpack-plugin')
-const NameAllModulesPlugin = require('name-all-modules-plugin')
 
-const isDev = process.env.NODE_ENV === 'development'
-
-const config = {
+module.exports = {
   entry: {
-    app: path.join(__dirname, '../client/entry.js')
+    app: [
+      'react-hot-loader/patch',
+      path.join(__dirname, '../src/entry.js')
+    ]
   },
   output: {
     filename: '[name].[hash].js',
     path: path.join(__dirname, '../dist'),
-    publicPath: '/public/'
+    publicPath: '/'
   },
   resolve: {
+    modules: ['node_modules'],
     extensions: ['.js', '.jsx']
   },
   module: {
@@ -28,12 +30,9 @@ const config = {
         ]
       }, */
       {
-        test: /.jsx$/,
-        loader: 'babel-loader'
-      },
-      {
-        test: /.js$/,
-        loader: 'babel-loader',
+        test: /.(jsx|js)$/,
+        use: ['happypack/loader?id=babel'],
+        include: path.resolve(__dirname, '../src'),
         exclude: [
           path.join(__dirname, '../node_modules')
         ]
@@ -46,6 +45,9 @@ const config = {
           },
           {
             loader: 'css-loader' // translates CSS into CommonJS
+          },
+          {
+            loader: 'postcss-loader'
           },
           {
             loader: 'less-loader',
@@ -85,33 +87,18 @@ const config = {
       }
     ]
   },
-  plugins: [
-    new HTMLPlugin({
-      template: path.join(__dirname, '../client/index.html')
-    })
-  ]
-}
-
-if (isDev) {
-  config.entry = {
-    app: [
-      'react-hot-loader/patch',
-      path.join(__dirname, '../client/entry.js')
-    ]
-  }
-  config.devServer = {
+  devtool: 'cheap-module-eval-source-map',
+  devServer: {
     host: '0.0.0.0',
     compress: true,
     port: '8081',
-    contentBase: path.join(__dirname, '../dist'),
+    contentBase: path.join(__dirname, '../'),
     hot: true,
     overlay: {
       errors: true
     },
-    publicPath: '/public/',
-    historyApiFallback: {
-      index: '/public/index.html'
-    },
+    publicPath: '/',
+    historyApiFallback: true,
     proxy: {
       '/book': {
         target: 'https://api.douban.com',
@@ -123,44 +110,18 @@ if (isDev) {
         changeOrigin: true
       }
     }
-  }
-  config.plugins.push(new webpack.HotModuleReplacementPlugin())
-} else {
-  config.entry = {
-    app: path.join(__dirname, '../client/entry.js'),
-    vendor: [
-      'react',
-      'react-dom',
-      'react-router-dom',
-      'mobx',
-      'mobx-react',
-      'axios'
-    ]
-  }
-  config.output.filename = '[name].[chunkhash].js'
-  config.plugins.push(
-    new webpack.optimize.UglifyJsPlugin(),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor'
+  },
+  plugins: [
+    new HTMLPlugin({
+      template: path.join(__dirname, '../src/index.html')
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'manifest',
-      minChunks: Infinity
+    new HappyPack({
+      // 用唯一的标识符 id 来代表当前的 HappyPack 是用来处理一类特定的文件
+      id: 'babel',
+      // 如何处理 .js 文件，用法和 Loader 配置中一样
+      loaders: ['babel-loader?cacheDirectory']
+      // ... 其它配置项
     }),
-    new webpack.NamedModulesPlugin(),
-    new NameAllModulesPlugin(),
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('production')
-      }
-    }),
-    new webpack.NamedChunksPlugin((chunk) => {
-      if (chunk.name){
-        return chunk.name
-      }
-      return chunk.mapModules(m => path.relative(m.context, m.request)).join('_')
-    })
-  )
+    new webpack.HotModuleReplacementPlugin()
+  ]
 }
-
-module.exports = config
