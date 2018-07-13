@@ -4,7 +4,7 @@ export default class Test extends Component {
   render() {
     return (
       <div>
-                test组件页面
+         test组件页面
       </div>
     )
   }

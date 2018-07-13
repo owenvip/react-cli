@@ -7,11 +7,12 @@ module.exports = {
   entry: {
     app: [
       'react-hot-loader/patch',
-      path.join(__dirname, '../src/entry.js')
+      path.join(__dirname, '../src/index.js')
     ]
   },
   output: {
     filename: '[name].[hash].js',
+    chunkFilename: '[name].[chunkhash].js',
     path: path.join(__dirname, '../dist'),
     publicPath: '/'
   },
@@ -30,7 +31,7 @@ module.exports = {
         ]
       }, */
       {
-        test: /.(jsx|js)$/,
+        test: /.js$/,
         use: ['happypack/loader?id=babel'],
         include: path.resolve(__dirname, '../src'),
         exclude: [
@@ -52,6 +53,7 @@ module.exports = {
           {
             loader: 'less-loader',
             options: {
+              sourceMap: true,
               modifyVars: {
                 'font-size-base': '14px'
               }

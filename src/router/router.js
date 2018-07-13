@@ -1,16 +1,40 @@
-import React from 'react'
-import { Route, Redirect, Switch } from 'react-router-dom'
-import Home from '../components/home'
-import Test from '../components/test'
-import Detail from '../components/detail'
-import User from '../components/user'
+import Loadable from '../utils/loadable'
 
-export default () => [
-  <Route path="/" key="home" component={Home} exact />,
-  <Route path="/a" key="a" render={() => <Redirect to="/test" />} />,
-  <Route path="/test" key="test" component={Test} />,
-  <Switch key="switch">
-    <Route path="/b/detail" key="detail" component={Detail} />,
-    <Route path="/b/:id" key="user" component={User} />
-  </Switch>,
+const routes = [
+  {
+    path: '/',
+    exact: true,
+    component: Loadable({
+      loader: () => import(/* webpackChunkName: "route-home" */ '../components/Home'),
+    }),
+  },
+  {
+    path: '/test',
+    component: Loadable({
+      loader: () => import(/* webpackChunkName: "route-test" */ '../components/Test'),
+    }),
+  },
+  {
+    path: '/a',
+    redirect: '/test',
+  },
+  {
+    path: '/b',
+    routes: [
+      {
+        path: 'detail',
+        component: Loadable({
+          loader: () => import(/* webpackChunkName: "route-detail" */ '../components/Detail'),
+        }),
+      },
+      {
+        path: '/:id',
+        component: Loadable({
+          loader: () => import(/* webpackChunkName: "route-user" */ '../components/User'),
+        }),
+      },
+    ],
+  },
 ]
+
+export default routes

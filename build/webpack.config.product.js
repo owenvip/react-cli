@@ -10,7 +10,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin") */
 
 module.exports = {
   entry: {
-    app: path.join(__dirname, '../src/entry.js'),
+    app: path.join(__dirname, '../src/index.js'),
     vendor: [
       'react',
       'react-dom',

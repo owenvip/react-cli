@@ -17,16 +17,19 @@
     "mobx"
   ],
   "dependencies": {
-    "autoprefixer": "^8.6.5",
+    "antd": "^3.6.6",
     "axios": "^0.17.1",
+    "dom-align": "^1.8.0",
     "express": "^4.16.2",
     "lodash": "^4.17.10",
     "mobx": "^3.4.1",
     "mobx-react": "^4.3.5",
     "prop-types": "^15.6.0",
+    "rc-align": "^2.4.3",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-hot-loader": "^3.0.0",
+    "react-loadable": "^5.4.0",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2"
   },

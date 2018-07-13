@@ -4,7 +4,7 @@ export default class Detail extends Component {
   render() {
     return (
       <div>
-         detail组件页面
+        详情页面
       </div>
     )
   }
