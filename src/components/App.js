@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
-import { observer, inject, PropTypes as PropTypesObservable } from 'mobx-react'
+import { observer, inject } from 'mobx-react'
 import PropTypes from 'prop-types'
-import { withRouter, Route, Switch, Link } from 'react-router-dom';
+import { withRouter, Route, Switch } from 'react-router-dom';
 import { Layout, Menu, Breadcrumb, Icon } from 'antd';
 import routes from '../router/router'
 import Loadable from '../utils/loadable'
 import { request } from '../utils/axios'
 import '../style/main.less'
-import { AppState } from '../store/state' // 此处引入仅用于严格限制为state格式
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
@@ -16,8 +15,23 @@ const { Header, Content, Sider } = Layout;
 const LoadableNoMatch = Loadable({
   loader: () => import(/* webpackChunkName: "route-noMatch" */ './NoMatch'),
 });
+//
+const menus = [
+  {
+    key: '/',
+    title: '首页',
+  },
+  {
+    key: '/test',
+    title: '测试页',
+  },
+  {
+    key: '/a',
+    title: '详情页',
+  },
+]
 
-@inject('appState')
+@inject('store')
 @withRouter
 @observer
 export default class App extends Component {
@@ -32,12 +46,22 @@ export default class App extends Component {
     test().then(data => console.log(data)).catch(err => console.log(err))
   }
 
-  changeName(event) {
-    this.props.appState.changeName(event.target.value)
+  static get propTypes() {
+    return {
+      history: PropTypes.object,
+    };
+  }
+
+  changeUrl = path => () => {
+    this.props.history.push(path)
   }
 
   renderRoute = ({ path, component }) => (
     <Route key={path} path={path} component={component} exact />
+  )
+
+  renderMemus = ({ key, title }) => (
+    <Menu.Item key={key} onClick={this.changeUrl(key)}>{title}</Menu.Item>
   )
 
   render() {
@@ -48,12 +72,10 @@ export default class App extends Component {
           <Menu
             theme="dark"
             mode="horizontal"
-            defaultSelectedKeys={['2']}
+            defaultSelectedKeys={['/']}
             style={{ lineHeight: '64px' }}
           >
-            <Menu.Item key="home"><Link to="/">首页</Link></Menu.Item>
-            <Menu.Item key="test"><Link to="/test">测试页</Link></Menu.Item>
-            <Menu.Item key="user"><Link to="/b/detail">用户页</Link></Menu.Item>
+            {menus.map(this.renderMemus)}
           </Menu>
         </Header>
         <Layout>
@@ -102,10 +124,3 @@ export default class App extends Component {
     )
   }
 }
-App.prototypes = {
-  appState: PropTypesObservable.observableObject.isRequired,
-}
-App.defaultProps = {
-  testVlaue: 'mlgb',
-}
-

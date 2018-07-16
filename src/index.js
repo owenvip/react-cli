@@ -1,23 +1,21 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { BrowserRouter, Link } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'mobx-react'
 import { AppContainer } from 'react-hot-loader'
+import store from './store/store'
 import App from './components/App'
 
-import appState from './store/state'
-
-
-const root = document.getElementById('root')
 const render = () => {
   ReactDOM.render(
     <AppContainer>
-      <Provider appState={appState}>
+      <Provider store={store}>
         <BrowserRouter>
           <App />
         </BrowserRouter>
       </Provider>
-    </AppContainer>, root)
+    </AppContainer>,
+    document.getElementById('root'))
 }
 
 render()

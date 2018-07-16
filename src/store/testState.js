@@ -1,7 +1,9 @@
-import { observable, computed, autorun, action } from 'mobx'
+import { observable, computed, action, useStrict } from 'mobx'
 import { request } from '../utils/axios'
 
-export class AppState {
+useStrict(true)
+
+class TestState {
   @observable globalInfo = {}
   @observable count = 0
   @observable name = 'owen'
@@ -28,10 +30,5 @@ export class AppState {
   }
 }
 
-const appState = new AppState()
-
-autorun(() => {
-  appState.getGlobalInfo()
-})
-
-export default appState
+const testState = new TestState();
+export default testState
