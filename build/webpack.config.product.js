@@ -4,11 +4,11 @@ const HappyPack = require('happypack')
 const HTMLPlugin = require('html-webpack-plugin')
 const NameAllModulesPlugin = require('name-all-modules-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-/* const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
-const MiniCssExtractPlugin = require("mini-css-extract-plugin") */
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
+  mode: 'production',
   entry: {
     app: path.join(__dirname, '../src/index.js'),
     vendor: [
@@ -32,14 +32,6 @@ module.exports = {
   },
   module: {
     rules: [
-      /* {
-        enforce: 'pre',
-        test: /.(js|jsx)$/,
-        loader: 'eslint-loader',
-        exclude: [
-          path.resolve(__dirname, '../node_modules')
-        ]
-      }, */
       {
         test: /.(jsx|js)$/,
         use: ['happypack/loader?id=babel'],
@@ -50,18 +42,21 @@ module.exports = {
       },
       {
         test: /\.less|css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            {
-              loader: 'css-loader',
-              options: {
-                minimize: true
-              }
-            }, {
-              loader: 'less-loader'
-            }]
-        })
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: {
+              minimize: true
+            }
+          },
+          {
+            loader: 'postcss-loader'
+          },
+          {
+            loader: 'less-loader'
+          }
+        ]
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
@@ -102,42 +97,16 @@ module.exports = {
       loaders: ['babel-loader?cacheDirectory']
       // ... 其它配置项
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      // 过滤掉以".min.js"结尾的文件，我们认为这个后缀本身就是已经压缩好的代码，没必要进行二次压缩
-      exclude: /\.min\.js$/,
-      cache: true,
-      // 开启并行压缩，充分利用cpu
-      parallel: true,
-      sourceMap: false,
-      // 移除注释
-      extractComments: false,
-      uglifyOptions: {
-        compress: {
-          unused: true,
-          warnings: false,
-          drop_console: true
-        },
-        output: {
-          comments: false
-        }
-      }
+    new OptimizeCssAssetsPlugin({
+      assetNameRegExp: /\.optimize\.css$/g,
+      cssProcessor: require('cssnano'),
+      cssProcessorOptions: {safe: true, discardComments: {removeAll: true}},
+      canPrint: true
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: ['vendor', 'manifest'],
-      minChunks: Infinity
+    new MiniCssExtractPlugin({
+      filename: 'style/[name].css',
+      chunkFilename: 'style/[id].css'
     }),
-    // css压缩 webpack需4.x
-    new ExtractTextPlugin('style/main.css'),
-    // new OptimizeCssAssetsPlugin({
-    //   assetNameRegExp: /\.optimize\.css$/g,
-    //   cssProcessor: require('cssnano'),
-    //   cssProcessorOptions: { safe: true, discardComments: { removeAll: true } },
-    //   canPrint: true
-    // }),
-    // new MiniCssExtractPlugin({
-    //   filename: 'style/[name].css',
-    //   chunkFilename: 'style/[id].css'
-    // }),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.NamedModulesPlugin(),
     new NameAllModulesPlugin(),
@@ -156,5 +125,19 @@ module.exports = {
       }
       return chunk.mapModules(m => path.relative(m.context, m.request)).join('_')
     })
-  ]
+  ],
+  optimization: {
+    runtimeChunk: {
+      name: 'manifest'
+    },
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendor',
+          chunks: 'all'
+        }
+      }
+    }
+  }
 }
