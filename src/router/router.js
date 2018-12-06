@@ -5,13 +5,13 @@ const routes = [
     path: '/',
     exact: true,
     component: Loadable({
-      loader: () => import(/* webpackChunkName: "route-home" */ '../components/Home'),
+      loader: () => import(/* webpackChunkName: "route-home" */ '../components/Home/Home'),
     }),
   },
   {
     path: '/test',
     component: Loadable({
-      loader: () => import(/* webpackChunkName: "route-test" */ '../components/Test'),
+      loader: () => import(/* webpackChunkName: "route-test" */ '../components/Test/Test'),
     }),
   },
   {
@@ -24,13 +24,13 @@ const routes = [
       {
         path: 'detail',
         component: Loadable({
-          loader: () => import(/* webpackChunkName: "route-detail" */ '../components/Detail'),
+          loader: () => import(/* webpackChunkName: "route-detail" */ '../components/Detail/Detail'),
         }),
       },
       {
         path: '/:id',
         component: Loadable({
-          loader: () => import(/* webpackChunkName: "route-user" */ '../components/User'),
+          loader: () => import(/* webpackChunkName: "route-user" */ '../components/User/User'),
         }),
       },
     ],

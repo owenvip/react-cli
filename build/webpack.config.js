@@ -24,7 +24,7 @@ module.exports = {
   },
   resolve: {
     modules: ['node_modules'],
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.jsx', ".ts", ".tsx"],
     alias: {
       '~': path.join(__dirname, '../src')
     }
@@ -42,6 +42,14 @@ module.exports = {
       {
         test: /.js$/,
         use: ['happypack/loader?id=babel'],
+        include: path.resolve(__dirname, '../src'),
+        exclude: [
+          path.join(__dirname, '../node_modules')
+        ]
+      },
+      {
+        test: /\.tsx?$/,
+        loader: "awesome-typescript-loader",
         include: path.resolve(__dirname, '../src'),
         exclude: [
           path.join(__dirname, '../node_modules')

@@ -13,7 +13,7 @@ const { Header, Content, Sider } = Layout;
 
 // 404
 const LoadableNoMatch = Loadable({
-  loader: () => import(/* webpackChunkName: "route-noMatch" */ './NoMatch'),
+  loader: () => import(/* webpackChunkName: "route-noMatch" */ './NoMatch/NoMatch'),
 });
 //
 const menus = [
