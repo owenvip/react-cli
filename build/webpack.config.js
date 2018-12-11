@@ -4,6 +4,7 @@ const HappyPack = require('happypack')
 const HTMLPlugin = require('html-webpack-plugin')
 const history = require('connect-history-api-fallback')
 const convert = require('koa-connect')
+const tsImportPluginFactory = require('ts-import-plugin')
 const internalIp = require('internal-ip') // 开发环境允许其他电脑访问
 
 const dev = Boolean(process.env.WEBPACK_SERVE)
@@ -50,7 +51,15 @@ module.exports = {
       {
         test: /\.tsx?$/,
         loader: "awesome-typescript-loader",
-        include: path.resolve(__dirname, '../src'),
+        options: {
+          getCustomTransformers: () => ({
+            before: [ tsImportPluginFactory({
+              libraryDirectory: 'es',
+              libraryName: 'antd',
+              style: 'css',
+            }) ]
+          }),
+        },
         exclude: [
           path.join(__dirname, '../node_modules')
         ]
