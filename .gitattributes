@@ -1,3 +1,1 @@
-*.js linguist-language=react
-*.css linguist-language=react
-*.html linguist-language=react
+test/**/*.js linguist-language=React
