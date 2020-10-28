@@ -11,9 +11,12 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const PROD = process.env.NODE_ENV === 'production'
 const srcPath = path.resolve(__dirname, 'src')
+const outputPath = path.resolve(__dirname, 'build')
+const publicPath = path.resolve(srcPath, 'public')
 
 function getCSSLoader(lang) {
   let loaders = []
@@ -85,7 +88,7 @@ const config = {
   },
   output: {
     publicPath: '/',
-    path: __dirname + '/build',
+    path: outputPath,
     filename: 'bundle.js',
     chunkFilename: PROD ? '[id].[contenthash].js' : '[id].js',
   },
@@ -146,7 +149,7 @@ const config = {
       minimal: true,
       compiledIn: true,
     }),
-    // new webpack.WatchIgnorePlugin([/(css|less)\.d\.ts$/]),
+    new webpack.WatchIgnorePlugin([/(css|less)\.d\.ts$/]),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new ModuleNotFoundPlugin(),
     new WebpackManifestPlugin({
@@ -179,15 +182,22 @@ const config = {
         context: __dirname,
       },
     }),
+    new HtmlWebpackPlugin({
+      template: path.resolve(publicPath, 'index.ejs'),
+      hash: false,
+      inject: true,
+      minify: {
+        collapseWhitespace: PROD,
+        minifyJS: PROD,
+      },
+    }),
   ],
   optimization: {
     minimize: PROD,
     minimizer: [
-      // new TerserWebpackPlugin({
-      //   cache: true,
-      //   parallel: true,
-      //   sourceMap: true,
-      // }),
+      new TerserWebpackPlugin({
+        parallel: true,
+      }),
       new OptimizeCSSAssetsPlugin({
         cssProcessorOptions: {
           map: {
@@ -219,8 +229,17 @@ if (PROD) {
   )
 } else {
   config.devtool = 'eval-cheap-module-source-map'
+  config.devServer = {
+    publicPath: '/',
+    hot: true,
+    open: true,
+    compress: true,
+    port: 3000,
+    contentBase: outputPath,
+  }
+  config.plugins.push(new webpack.NamedModulesPlugin())
   config.plugins.push(new webpack.HotModuleReplacementPlugin())
-  config.plugins.push(new WatchMissingNodeModulesPlugin('./node_modules'))
+  config.plugins.push(new WatchMissingNodeModulesPlugin(__dirname + './node_modules'))
   config.plugins.push(
     new ESLintPlugin({
       extensions: ['js', 'ts', 'jsx', 'tsx'],
@@ -230,13 +249,13 @@ if (PROD) {
   )
 }
 
-if (fs.existsSync(path.resolve(srcPath, 'public'))) {
+if (fs.existsSync(publicPath)) {
   config.plugins.push(
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: '/',
-          to: __dirname + '/build',
+          from: publicPath,
+          to: outputPath,
           noErrorOnMissing: true,
           globOptions: {
             ignore: ['**/*.ejs', '**/*.md'],

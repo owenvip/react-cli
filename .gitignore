@@ -59,3 +59,6 @@ typings
 
 # webpack build
 build
+
+# ide output
+.idea
