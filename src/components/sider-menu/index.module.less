@@ -1,0 +1,27 @@
+@import '~antd/es/style/themes/default.less';
+
+.sider-menu {
+  overflow: auto;
+  height: 100vh;
+
+  // stylelint-disable-next-line
+  :global {
+    .ant-menu {
+      &-item,
+      &-submenu-title {
+        user-select: none;
+      }
+    }
+  }
+
+  &-header {
+    width: 100%;
+    padding: 0 @padding-md;
+    height: @layout-header-height;
+  }
+
+  &.no-logo {
+    // stylelint-disable-next-line
+    height: calc(100vh - @layout-header-height);
+  }
+}

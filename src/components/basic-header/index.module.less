@@ -1,0 +1,30 @@
+@import '~antd/es/style/themes/default.less';
+
+.basic-header {
+  display: flex;
+  justify-content: space-between;
+  color: @white;
+
+  &-left {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .app-name {
+    color: @white;
+    line-height: @layout-header-height;
+    margin-bottom: 0;
+  }
+
+  &-right {
+    display: flex;
+
+    .user-name {
+      margin-left: 10px;
+      user-select: none;
+      cursor: pointer;
+    }
+  }
+}
