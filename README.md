@@ -1,4 +1,4 @@
-# Pangu
+# react cli
 
 ## Develop
 

@@ -1,19 +1,19 @@
 version: '3.7'
 
 services:
-  pangu:
+  web:
     build: ../
-    container_name: 'pangu'
+    container_name: 'web'
     restart: unless-stopped
     ports:
       - 8000:80
     volumes:
       - build:/usr/src/app/build
-  # pangu_web:
+  # web:
   #   image: nginx
   #   ports:
   #     - 8000:80
-  #   container_name: "pangu_web"
+  #   container_name: "web"
   #   restart: unless-stopped
   #   volumes:
   #     - build:/usr/share/nginx/html:ro

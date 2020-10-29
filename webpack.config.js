@@ -11,25 +11,23 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const PROD = process.env.NODE_ENV === 'production'
 const srcPath = path.resolve(__dirname, 'src')
 const outputPath = path.resolve(__dirname, 'build')
 const publicPath = path.resolve(srcPath, 'public')
+const appConfig = JSON.parse(fs.readFileSync(__dirname + '/app.json', 'utf8'))
 
 function getCSSLoader(lang) {
-  let loaders = []
-  if (PROD) {
-    loaders = [MiniCSSExtractPlugin.loader]
-  } else {
-    loaders = [
-      {
-        loader: require.resolve('style-loader'),
-      },
-    ]
-  }
-
+  let loaders = PROD
+    ? [MiniCSSExtractPlugin.loader]
+    : [
+        {
+          loader: require.resolve('style-loader'),
+        },
+      ]
+  loaders.push('@opd/css-modules-typings-loader')
   loaders = [
     ...loaders,
     {
@@ -69,6 +67,7 @@ function getCSSLoader(lang) {
         sourceMap: true,
         lessOptions: {
           javascriptEnabled: true,
+          modifyVars: appConfig.antdCustomTheme || {},
         },
       },
     })
@@ -183,6 +182,7 @@ const config = {
       },
     }),
     new HtmlWebpackPlugin({
+      title: appConfig.appName,
       template: path.resolve(publicPath, 'index.ejs'),
       hash: false,
       inject: true,
@@ -239,7 +239,9 @@ if (PROD) {
   }
   config.plugins.push(new webpack.NamedModulesPlugin())
   config.plugins.push(new webpack.HotModuleReplacementPlugin())
-  config.plugins.push(new WatchMissingNodeModulesPlugin(__dirname + './node_modules'))
+  config.plugins.push(
+    new WatchMissingNodeModulesPlugin(__dirname + './node_modules')
+  )
   config.plugins.push(
     new ESLintPlugin({
       extensions: ['js', 'ts', 'jsx', 'tsx'],

@@ -1,20 +1,20 @@
 import React, { FC, useMemo } from 'react'
 import { Layout } from 'antd'
 import BasicHeader from '@/components/basic-header'
-import BasicFooter from '@/components/basic-footer'
 import SiderMenu from '@/components/sider-menu'
 import styles from './index.module.less'
 import { useLocation } from 'react-router'
 import flattenRoutes from '@/utils/flatten-routes'
 import { pathToRegexp } from 'path-to-regexp'
 import { SiderTheme } from 'antd/lib/layout/Sider'
-import { LayoutBaseProps } from '../types'
+import { RouteConfig } from '@/interfaces/route'
 
 const { Content } = Layout
 
-interface Props extends LayoutBaseProps {
+interface Props {
   siderWidth?: number
   theme?: SiderTheme
+  routes?: RouteConfig[]
 }
 
 const MenuLayout: FC<Props> = ({
@@ -46,20 +46,15 @@ const MenuLayout: FC<Props> = ({
   )
 
   const { meta = {} } = route
-  const {
-    header: Header = BasicHeader,
-    footer: Footer = BasicFooter,
-    sider: Sider = SiderMenu,
-  } = meta
+  const { header: Header = BasicHeader, sider: Sider = SiderMenu } = meta
   return (
-    <Layout className={styles.menuLayout}>
+    <Layout className={styles.basicLayout}>
       {Sider ? (
         <Sider theme={theme} width={siderWidth} routes={routes} />
       ) : null}
       <Layout>
         {Header ? <Header left={null} /> : null}
-        <Content className={styles.menuLayoutContent}>{children}</Content>
-        {Footer ? <Footer /> : null}
+        <Content className={styles.basicLayoutContent}>{children}</Content>
       </Layout>
     </Layout>
   )

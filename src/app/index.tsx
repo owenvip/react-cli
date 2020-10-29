@@ -1,6 +1,6 @@
 import React, { ComponentType, FC, Suspense } from 'react'
 import { Redirect, Route, Router, Switch } from 'react-router-dom'
-import { MenuLayout as Layout } from '@/layouts'
+import BasicLayout from '@/components/basic-layout'
 import PageLoading from '@/components/page-loading'
 import routes from '@/routes'
 import { History } from 'history'
@@ -16,7 +16,7 @@ function renderComponent(Cmp: ComponentType | undefined, props: any) {
 
 const App: FC<Props> = ({ history }) => (
   <Router history={history}>
-    <Layout routes={routes}>
+    <BasicLayout routes={routes}>
       <Suspense fallback={<PageLoading />}>
         <Switch>
           {routes.map(
@@ -39,7 +39,7 @@ const App: FC<Props> = ({ history }) => (
           <Redirect from="*" to="/error/404" />
         </Switch>
       </Suspense>
-    </Layout>
+    </BasicLayout>
   </Router>
 )
 
