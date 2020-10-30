@@ -5,7 +5,7 @@ const WebpackBar = require('webpackbar')
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin')
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin')
-const WebpackManifestPlugin = require('webpack-manifest-plugin')
+// const WebpackManifestPlugin = require('webpack-manifest-plugin')
 const TerserWebpackPlugin = require('terser-webpack-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin')
@@ -27,7 +27,6 @@ function getCSSLoader(lang) {
           loader: require.resolve('style-loader'),
         },
       ]
-  loaders.push('@opd/css-modules-typings-loader')
   loaders = [
     ...loaders,
     {
@@ -75,6 +74,12 @@ function getCSSLoader(lang) {
   return loaders
 }
 
+const globalVars = {
+  process: process,
+  'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+  'process.env.APP_ENV': JSON.stringify(process.env.APP_ENV),
+}
+
 const config = {
   mode: PROD ? 'production' : 'development',
   entry: {
@@ -88,7 +93,7 @@ const config = {
   output: {
     publicPath: '/',
     path: outputPath,
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
     chunkFilename: PROD ? '[id].[contenthash].js' : '[id].js',
   },
   resolve: {
@@ -98,6 +103,7 @@ const config = {
     alias: {
       '@': srcPath,
     },
+    fallback: { os: require.resolve('os-browserify/browser') },
   },
   module: {
     rules: [
@@ -148,33 +154,34 @@ const config = {
       minimal: true,
       compiledIn: true,
     }),
-    new webpack.WatchIgnorePlugin([/(css|less)\.d\.ts$/]),
+    // new webpack.WatchIgnorePlugin([/(css|less)\.d\.ts$/]),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new webpack.DefinePlugin(globalVars),
     new ModuleNotFoundPlugin(),
-    new WebpackManifestPlugin({
-      fileName: 'asset-manifest.json',
-      generate: (seed, files, entrypoints) => {
-        const manifestFiles = files.reduce((manifest, file) => {
-          manifest[file.name] = file.path
-          return manifest
-        }, seed)
-
-        const entrypointFiles = []
-
-        Object.entries(entrypoints).forEach(([key, files]) =>
-          files.forEach((fileName) => {
-            if (!fileName.endsWith('.map')) {
-              entrypointFiles.push(fileName)
-            }
-          })
-        )
-
-        return {
-          files: manifestFiles,
-          entrypoints: entrypointFiles,
-        }
-      },
-    }),
+    // new WebpackManifestPlugin({
+    //   fileName: 'asset-manifest.json',
+    //   generate: (seed, files, entrypoints) => {
+    //     const manifestFiles = files.reduce((manifest, file) => {
+    //       manifest[file.name] = file.path
+    //       return manifest
+    //     }, seed)
+    //
+    //     const entrypointFiles = []
+    //
+    //     Object.entries(entrypoints).forEach(([key, files]) =>
+    //       files.forEach((fileName) => {
+    //         if (!fileName.endsWith('.map')) {
+    //           entrypointFiles.push(fileName)
+    //         }
+    //       })
+    //     )
+    //
+    //     return {
+    //       files: manifestFiles,
+    //       entrypoints: entrypointFiles,
+    //     }
+    //   },
+    // }),
     new webpack.LoaderOptionsPlugin({
       debug: true,
       options: {
@@ -190,6 +197,7 @@ const config = {
         collapseWhitespace: PROD,
         minifyJS: PROD,
       },
+      nodeModules: false,
     }),
   ],
   optimization: {
@@ -228,16 +236,14 @@ if (PROD) {
     })
   )
 } else {
-  config.devtool = 'eval-cheap-module-source-map'
+  config.devtool = 'inline-source-map'
   config.devServer = {
-    publicPath: '/',
     hot: true,
     open: true,
     compress: true,
-    port: 3000,
+    port: 8000,
     contentBase: outputPath,
   }
-  config.plugins.push(new webpack.NamedModulesPlugin())
   config.plugins.push(new webpack.HotModuleReplacementPlugin())
   config.plugins.push(
     new WatchMissingNodeModulesPlugin(__dirname + './node_modules')

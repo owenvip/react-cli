@@ -1,11 +1,11 @@
 import React, { useState, useEffect, FC } from 'react'
-import App from '@/app'
+// import App from '@/app'
 import { ConfigProvider } from 'antd'
-import { createHashHistory } from 'history'
+// import { createHashHistory } from 'history'
 import { Locale } from 'antd/lib/locale-provider'
 
 // history
-const history = createHashHistory()
+// const history = createHashHistory()
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -39,11 +39,7 @@ const Root: FC = () => {
     }
   }, [])
 
-  return (
-    <ConfigProvider locale={antdLocale}>
-      <App history={history} />
-    </ConfigProvider>
-  )
+  return <ConfigProvider locale={antdLocale}>1111111111111111</ConfigProvider>
 }
 
 export default Root
