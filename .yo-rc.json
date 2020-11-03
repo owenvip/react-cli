@@ -1,8 +1,0 @@
-{
-  "generator-react-webpack": {
-    "appName": "react-cli",
-    "style": "less",
-    "postcss": true,
-    "generatedWithVersion": 3
-  }
-}

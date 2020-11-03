@@ -1,6 +1,5 @@
 interface CSSModules {
-  menuLayout: string;
-  menuLayoutContent: string;
+  basicFooter: string;
 }
 export const cssModules: CSSModules;
 export default cssModules;

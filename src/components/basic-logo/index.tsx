@@ -17,12 +17,17 @@ const BasicLogo: FC<LogoProps> = ({ collapsed }) => {
   return (
     <Link to="/" className={styles.appLogo}>
       <span className={styles.appImg}>
-        <img src="/logo.png" onError={handleImgLoadError} />
+        <img
+          src="/favicon.png"
+          width="100%"
+          height="100%"
+          onError={handleImgLoadError}
+        />
       </span>
       <Animate component="" transitionName="fade">
         {!collapsed ? (
           <span key="app-name" className={styles.appName}>
-            {process.env.APP_NAME}
+            react app
           </span>
         ) : null}
       </Animate>
